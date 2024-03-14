@@ -14,7 +14,7 @@ Carves partial DEFLATE data
 
 # Justification
 In section 1.1 of RFC-1951:  
-*The data format defined by this specification does not attempt to:*
+*The data format defined by this specification does not attempt to:*  
 *Allow random access to compressed data;*  
 
 This doesn't mean that it's impossible, just that the specification isn't written to for this purpose. ToeKnife helps to assist with some random access.
