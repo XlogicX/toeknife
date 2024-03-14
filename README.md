@@ -12,6 +12,13 @@ Carves partial DEFLATE data
   - --data DATA        ASCIIHex representation of the filedata right on the commandline
   - --guesses GUESSES  Guessfile for partial data refered to by length-distance pairs
 
+# Justification
+In section 1.1 of RFC-1951:  
+*The data format defined by this specification does not attempt to:*
+*Allow random access to compressed data;*  
+
+This doesn't mean that it's impossible, just that the specification isn't written to for this purpose. ToeKnife helps to assist with some random access.
+
 # Sample Workflow
 For a sample phrase of:  
 *Some numbers are one, two, three, and four. four is the only of those that has four letters in it*  
