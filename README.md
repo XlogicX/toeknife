@@ -45,3 +45,12 @@ Assuming we ran this without a guess.txt file, if you look at the final output '
 `2:ers `  
 
 Now that we have those guesses, it will fill those values in for us with the `--guesses guesses.txt` argument.
+
+# Sample Command for Huffman Fragment
+`python toeknife.py --dynamic partialhuff.bin --window 70 --data 'ac7bffb0940e2b6b8f5213ae480fa4de04fe7ae601'`  
+
+The full data with huffman table and full (non fragment) data is:  
+`8dcbd10980400c04d156b600b10b0b0961258133caada0767fda811fef676096dbb6a311629d564eac7bffb0940e2b6b8f5213ae480fa4de04fe7ae601`  
+
+The original phrase that was compressed:  
+*Example sentance for forensic analysis, which is an example sentance for forensic analysis.*
