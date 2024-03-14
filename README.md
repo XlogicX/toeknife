@@ -49,7 +49,7 @@ Symbol Form:    ur.[0:5,6] is the only of those that has[1:6,35]lett[2:4,79]in i
 # Workflow Explanation
 Due to unknown alignment in a variable-width DEFLATE bitstream, the tool kind of trial and errors it with your assistance (not making assumptions for you). It will keep looping to ask you if the 'auditioned' data looks right. It displays a sample amount of the data (by default 20 bytes). We overrode that sample amount to 70 bytes with `--window 70`. We then fed it the partial ASCIIHex data with `--data`. We could have also provided this as a binary with `--file`.  
 
-Assuming we ran this without a guess.txt file, if you look at the final output 'Symbol Form,' this allows us to take some guesses at what the data might be. The first lenght-distance pair will be 5 characters 6 bytes back, we are guessing that those characters might be 'four '. We don't have a guess for the 6,35, but 'lett' followed by 4 more characters (79 bytes back), this could be the word 'letters ', so our guess could be 'ers '. The initial number before the colon in these tokens is just a numbered index, which is used in the guesses file, of which would look like this:  
+Assuming we ran this without a guess.txt file, if you look at the final output 'Symbol Form,' this allows us to take some guesses at what the data might be. The first length-distance pair will be 5 characters 6 bytes back, we are guessing that those characters might be 'four '. We don't have a guess for the 6,35, but 'lett' followed by 4 more characters (79 bytes back), this could be the word 'letters ', so our guess could be 'ers '. The initial number before the colon in these tokens is just a numbered index, which is used in the guesses file, of which would look like this:  
 `0: four`  
 `2:ers `  
 
