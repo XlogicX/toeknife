@@ -2,15 +2,17 @@
 Carves partial DEFLATE data
 
 # Usage
-  usage: ToeKnife [-h] [--window WINDOW] [--skip SKIP] [--file FILE] [--data DATA] [--guesses GUESSES]
+usage: ToeKnife [-h] [--window WINDOW] [--skip SKIP] [--file FILE] [--data DATA] [--guesses GUESSES]
+                [--dynamic DYNAMIC]
 
-  options:
-  - h, --help         show this help message and exit
+options:
+  - -h, --help         show this help message and exit
   - --window WINDOW    How many bytes of sample decompressed data to present to you (default is 20)
   - --skip SKIP        How many bits to pop from buffer for alignment (default 0)
   - --file FILE        Filename of the file that contains the compressed fragment
   - --data DATA        ASCIIHex representation of the filedata right on the commandline
   - --guesses GUESSES  Guessfile for partial data refered to by length-distance pairs
+  - --dynamic DYNAMIC  provide file with initial data fragment of dynamic block
 
 # Justification
 In section 1.1 of RFC-1951:  
