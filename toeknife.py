@@ -54,7 +54,10 @@ class nonprefix:
 
 		for idx,i in enumerate(tree):
 			code = '{num:0{width}b}'.format(num=i,width=self.bitlengths[idx])
-			self.table[self.alphabet[idx]] = code
+			if code == str(0):
+				self.table[self.alphabet[idx]] = '2'	# Hacky way to encode a bitlength of zero (because 2 isn't binary)
+			else:
+				self.table[self.alphabet[idx]] = code
 
 class bitstream:
 	# Builds up a large bitstream ordered in a sane way. Initilize with binary data
@@ -71,6 +74,11 @@ class bitstream:
 
 	def fetchbits(self,bits):
 		return self.bits[0:bits]
+
+	def extractbits(self,bits):
+		ebits = self.bits[0:bits]
+		self.bits = self.bits[bits:]
+		return ebits	
 
 def huffsearch(table,bits):
 	# We don't know how many bits the next token will be, so we search the huffman table for the first one that matches
@@ -173,6 +181,7 @@ parser.add_argument('--skip', help='How many bits to pop from buffer for alignme
 parser.add_argument('--file', help='Filename of the file that contains the compressed fragment', type=str)
 parser.add_argument('--data', help='ASCIIHex representation of the filedata right on the commandline', type=str)
 parser.add_argument('--guesses', help='Guessfile for partial data refered to by length-distance pairs', type=str)
+parser.add_argument('--dynamic', help='provide file with initial data fragment of dynamic block', type=str)
 args = parser.parse_args()
 
 # Get Data
@@ -182,7 +191,7 @@ if args.file:
 elif args.data:
 	sampledata = binascii.unhexlify(args.data)
 else:
-	print("You must supply a compressed fragment via STDIN or the --input argument")
+	print("You must supply a compressed fragment via the --file --data argument")
 	quit()
 
 # Get and parse guess file
@@ -199,19 +208,92 @@ if args.guesses:
 ##############################################################################
 #						Build Fixed Huffman Table
 ##############################################################################
-alphabet = []
-for i in range (0,288):
-	alphabet.append(str(i))
-	bitlengths = [8] * 144 + [9] * 112 + [7] * 24 + [8] * 8
-fixedhuff = nonprefix(alphabet,bitlengths)
-fixedhuff.construct()
 
-alphabet = []
-for i in range (0,29):
-	alphabet.append(str(i))
-	bitlengths = [5] * 29
-disthuff = nonprefix(alphabet,bitlengths)
-disthuff.construct()
+if args.dynamic:
+	f = open(args.dynamic, 'rb')
+	dhuffbin = f.read()
+	huffstream = bitstream(dhuffbin)
+	header = huffstream.extractbits(3)
+	if header != '101':
+		print("The start of fragment does not represent Dynamic Huffman Mode")
+		quit()
+	# Get Literal/Length, Distance, and Code Length codes
+	hlit = int(huffstream.extractbits(5)[::-1], 2)+257
+	hdist = int(huffstream.extractbits(5)[::-1], 2)+1
+	hclen = int(huffstream.extractbits(4)[::-1], 2)+4
+	codelengthcodes = [0] * 19
+	codelengthorder = ['16','17','18','0','8','7','9','6','10','5','11','4','12','3','13','2','14','1','15']
+	codelengthorder = codelengthorder[0:hclen]	# Only use the codes specified by HCLEN
+	# Parse through the code length codes
+	for idx,code in enumerate(codelengthorder):
+		codelengthcodes[int(code)] = int(huffstream.extractbits(3)[::-1],2)	# Extract bits and append integer form of code
+	codehuff = nonprefix(list(range(0,19)),codelengthcodes)					# Construct table with sequential order
+	codehuff.construct()
+
+	# Potentially Refactor Lit/Length and Dist routines; as they are so similar
+	# Create Dynamic Huffman Table For Lits and Lengths
+	dynbitlengths = [0] * hlit
+	i = 0
+	while i < hlit:
+		dynhuffcode = int(huffsearch(codehuff.table,huffstream))
+		if dynhuffcode < 16:
+			dynbitlengths[i] = dynhuffcode
+			i += 1
+		if dynhuffcode == 18:
+			zeros = int(huffstream.extractbits(7)[::-1],2) + 11
+			for j in range(zeros):
+				dynbitlengths[i] = 0
+				i += 1
+		if dynhuffcode == 17:
+			zeros = int(huffstream.extractbits(3)[::-1],2) + 3		
+			for j in range(zeros):
+				dynbitlengths[i] = 0
+				i += 1
+
+	# Create Dynamic Huffman Table For Distances
+	dynbitlengths_dist = [0] * hdist
+	i = 0
+	while i < hdist:
+		dynhuffcode = int(huffsearch(codehuff.table,huffstream))
+		if dynhuffcode < 16:
+			dynbitlengths_dist[i] = dynhuffcode
+			i += 1
+		if dynhuffcode == 18:
+			zeros = int(huffstream.extractbits(7)[::-1],2) + 11
+			for j in range(zeros):
+				dynbitlengths_dist[i] = 0
+				i += 1
+		if dynhuffcode == 17:
+			zeros = int(huffstream.extractbits(3)[::-1],2) + 3		
+			for j in range(zeros):
+				dynbitlengths_dist[i] = 0
+				i += 1
+
+	alphabet = []
+	for i in range (0,len(dynbitlengths)):
+		alphabet.append(str(i))
+	fixedhuff = nonprefix(alphabet,dynbitlengths)
+	fixedhuff.construct()
+
+	alphabet = []
+	for i in range (0,len(dynbitlengths_dist)):
+		alphabet.append(str(i))
+	disthuff= nonprefix(alphabet,dynbitlengths_dist)
+	disthuff.construct()
+else:
+	alphabet = []
+	for i in range (0,288):
+		alphabet.append(str(i))
+		bitlengths = [8] * 144 + [9] * 112 + [7] * 24 + [8] * 8
+	fixedhuff = nonprefix(alphabet,bitlengths)
+	fixedhuff.construct()
+
+	alphabet = []
+	for i in range (0,29):
+		alphabet.append(str(i))
+		bitlengths = [5] * 29
+	disthuff = nonprefix(alphabet,bitlengths)
+	disthuff.construct()
 
 for i in range(args.skip,26):
 	bits = bitstream(sampledata)				# Get bits (in proper orientation) of input data
@@ -226,7 +308,7 @@ for i in range(args.skip,26):
 	tryagain = input("Does this look right?")
 	if 'y' in tryagain.lower():
 		break
-	if i == 26:						# Longest theoretical bit pattern (length-distance token with max extra bits)
+	if i == 25:						# Longest theoretical bit pattern (length-distance token with max extra bits)
 		print("BOTCHED TOE!!!")
 	print()
 
