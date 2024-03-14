@@ -55,7 +55,7 @@ Assuming we ran this without a guess.txt file, if you look at the final output '
 
 Now that we have those guesses, it will fill those values in for us with the `--guesses guesses.txt` argument.
 
-# Sample Command for Huffman Fragment
+# Sample Command for Huffman Fragment (Dynamic Mode DEFLATE)
 `python toeknife.py --dynamic partialhuff.bin --window 70 --data 'ac7bffb0940e2b6b8f5213ae480fa4de04fe7ae601'`  
 
 The full data with huffman table and full (non fragment) data is:  
