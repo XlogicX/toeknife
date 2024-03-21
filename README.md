@@ -3,7 +3,7 @@ Carves partial DEFLATE data
 
 # Usage
 usage: ToeKnife [-h] [--window WINDOW] [--skip SKIP] [--file FILE] [--data DATA] [--guesses GUESSES]
-                [--dynamic DYNAMIC]
+                [--dynamic DYNAMIC] [--table]
 
 options:
   - -h, --help         show this help message and exit
@@ -13,6 +13,7 @@ options:
   - --data DATA        ASCIIHex representation of the filedata right on the commandline
   - --guesses GUESSES  Guessfile for partial data refered to by length-distance pairs
   - --dynamic DYNAMIC  provide file with initial data fragment of dynamic block
+  - --table            Dumps Huffman table to illustrate which characters are valid (for potential guesses)
 
 # Justification
 In section 1.1 of RFC-1951:  
