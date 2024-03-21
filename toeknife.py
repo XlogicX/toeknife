@@ -191,6 +191,7 @@ parser.add_argument('--file', help='Filename of the file that contains the compr
 parser.add_argument('--data', help='ASCIIHex representation of the filedata right on the commandline', type=str)
 parser.add_argument('--guesses', help='Guessfile for partial data refered to by length-distance pairs', type=str)
 parser.add_argument('--dynamic', help='provide file with initial data fragment of dynamic block', type=str)
+parser.add_argument('--table', help='Dumps Huffman table to illustrate which characters are valid (for potential guesses)', action="store_true")
 args = parser.parse_args()
 
 # Get Data
@@ -323,3 +324,23 @@ for i in range(args.skip,26):
 
 print("Recovered Data: {}".format(output))
 print("Symbol Form:    {}".format(symboloutput))
+
+if args.table:
+	print("Literal/Lengths:")
+	literallist = []
+	for token in fixedhuff.table:
+		if fixedhuff.table[token] != '2':  # If valid value in huffman table
+			if int(token) < 256:
+				if (int(token) > 31 and int(token) < 127):
+					literallist.append(chr(int(token)))
+				else:
+					literallist.append(hex(int(token)))				
+			elif int(token) > 256:
+					literallist.append('L-{}'.format(token))
+	print(literallist)
+	print("Distances:")
+	distlist = []
+	for token in disthuff.table:
+		if disthuff.table[token] != '2':  # If valid value in huffman table
+			distlist.append(token)
+	print(distlist)
