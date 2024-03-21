@@ -168,8 +168,17 @@ def carve(bits,guesses):
 
 				# Otherwise the length-distance pair is within our buffer (and is therefore known)
 				else:
+					# Add Symbol Form
 					symbolbuffer += '[{}:{},{}]'.format(ldcount,length,distance)
-					buffer += buffer[len(buffer)-distance:len(buffer)-distance+length]
+					# If the length is actually larger than the distance it goes back (it's looping)
+					while (length >= distance):
+						buffer += buffer[len(buffer)-distance:len(buffer)-distance+length]
+						length -= distance
+					# Either we are done with the looping part, or we just didn't have a distance smaller than length,
+					# either way, process what's left
+					else:
+						buffer += buffer[len(buffer)-distance:len(buffer)-distance+length]
+
 				ldcount += 1
 		return(buffer,symbolbuffer)
 	except:
