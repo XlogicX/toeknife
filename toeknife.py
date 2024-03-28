@@ -45,18 +45,16 @@ class nonprefix:
 
 		# Step 3: Assign numerical values to all codes, using consecutive values for all codes of the same length with the base
 		# 	values determined at step 2. Codes that are never used (which have a bit length of zero) must not be assigned a value.
-		tree = [0 for i in range(len(self.alphabet))]
-		for n in range(len(self.alphabet)):
-			length = self.bitlengths[n]
-			if length != 0:
+		tree = ['' for i in range(len(self.alphabet))]  # Initialize tree with all 0's
+		for n in range(len(self.alphabet)):		# For each item in the alphabet
+			length = self.bitlengths[n]				# not the bitlength
+			if length != 0:							# if it's not zero
 				tree[n] = next_code[length]
 				next_code[length] += 1
 
 		for idx,i in enumerate(tree):
-			code = '{num:0{width}b}'.format(num=i,width=self.bitlengths[idx])
-			if code == str(0):
-				self.table[self.alphabet[idx]] = '2'	# Hacky way to encode a bitlength of zero (because 2 isn't binary)
-			else:
+			if i != '':
+				code = '{num:0{width}b}'.format(num=i,width=self.bitlengths[idx])
 				self.table[self.alphabet[idx]] = code
 
 class bitstream:
@@ -195,6 +193,12 @@ def builddynhuff(hlit,table,huffstream):
 		if huffcode < 16:								# if less than 16, then take number at face value
 			bitlengths[i] = huffcode
 			i += 1
+		if huffcode == 16:								# code '16' repetition code (3-6 repetitions)
+			reps = int(huffstream.extractbits(2)[::-1],2) + 3	# calculate how many repetitions
+			bitlength = bitlengths[i-1]							# Get the most recent bitlength
+			for j in range(reps):
+				bitlengths[i] = bitlength
+				i += 1
 		if huffcode == 18:								# code '18' is 11-138 zeros
 			zeros = int(huffstream.extractbits(7)[::-1],2) + 11		# calculate how many zeros
 			for j in range(zeros):									# and place them in bitlengths table
