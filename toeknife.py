@@ -286,14 +286,13 @@ def presentresults():
 		print("Literal/Lengths:")
 		literallist = []
 		for token in huff.table:
-			if huff.table[token] != '2':  # If valid value in huffman table
-				if int(token) < 256:
-					if (int(token) > 31 and int(token) < 127):
-						literallist.append(chr(int(token)))
-					else:
-						literallist.append(hex(int(token)))				
-				elif int(token) > 256:
-						literallist.append('L-{}'.format(token))
+			if int(token) < 256:
+				if (int(token) > 31 and int(token) < 127):
+					literallist.append(chr(int(token)))
+				else:
+					literallist.append(hex(int(token)))				
+			elif int(token) > 256:
+					literallist.append('L-{}'.format(token))
 		print(literallist)
 		print("Distances:")
 		distlist = []
