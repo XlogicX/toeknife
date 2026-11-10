@@ -1,0 +1,1380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ToeKnife — damaged sample walkthroughs</title>
+<style>
+  :root {
+    --ground:   #eef1f2;
+    --card:     #ffffff;
+    --sunk:     #f5f7f8;
+    --ink:      #14181b;
+    --ink-soft: #4c565d;
+    --ink-dim:  #6f7a81;
+    --rule:     #d5dcdf;
+    --rule-soft:#e4e9eb;
+    --accent:   #0b6f88;
+    --accent-b: #e2f0f4;
+    --fact:     #4a7510;
+    --copy:     #0e7490;
+    --guess:    #8f6300;
+    --model:    #8438a0;
+    --unknown:  #b93b2c;
+    --void:     #8a949a;
+    --shadow:   0 1px 2px rgba(20,40,50,.06), 0 6px 18px rgba(20,40,50,.05);
+
+    --display: ui-monospace, "JetBrains Mono", SFMono-Regular, "SF Mono", Menlo,
+               Consolas, "Liberation Mono", monospace;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+            Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:   #0e1113;
+      --card:     #171b1e;
+      --sunk:     #121618;
+      --ink:      #dde3e6;
+      --ink-soft: #a3adb3;
+      --ink-dim:  #7d878d;
+      --rule:     #2a3236;
+      --rule-soft:#21282b;
+      --accent:   #58d1eb;
+      --accent-b: #16323b;
+      --fact:     #93d926;
+      --copy:     #58d1eb;
+      --guess:    #e2bd48;
+      --model:    #d189e6;
+      --unknown:  #e2564a;
+      --void:     #6b7378;
+      --shadow:   none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:   #0e1113;
+    --card:     #171b1e;
+    --sunk:     #121618;
+    --ink:      #dde3e6;
+    --ink-soft: #a3adb3;
+    --ink-dim:  #7d878d;
+    --rule:     #2a3236;
+    --rule-soft:#21282b;
+    --accent:   #58d1eb;
+    --accent-b: #16323b;
+    --fact:     #93d926;
+    --copy:     #58d1eb;
+    --guess:    #e2bd48;
+    --model:    #d189e6;
+    --unknown:  #e2564a;
+    --void:     #6b7378;
+    --shadow:   none;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  a { color: var(--accent); }
+
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    background: var(--card);
+    padding: 2.2rem 1.5rem 1.6rem;
+  }
+  .masthead-inner { max-width: 74rem; margin: 0 auto; }
+  .eyebrow {
+    font-family: var(--display);
+    font-size: .72rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 0 0 .6rem;
+  }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+    font-weight: 600;
+    letter-spacing: -.01em;
+    margin: 0 0 .7rem;
+    text-wrap: balance;
+  }
+  .lede { max-width: 60ch; color: var(--ink-soft); margin: 0; }
+  .lede + .lede { margin-top: .7rem; }
+
+  .wrap {
+    max-width: 74rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 62rem) {
+    .wrap { grid-template-columns: 14rem minmax(0, 1fr); gap: 3rem; align-items: start; }
+    .rail { position: sticky; top: 1.5rem; }
+  }
+
+  .rail h2 {
+    font-family: var(--display);
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 0 0 .7rem;
+    font-weight: 600;
+  }
+  .rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: .28rem; }
+  .rail a {
+    display: block;
+    font-family: var(--display);
+    font-size: .8rem;
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding: .18rem .45rem;
+    border-left: 2px solid var(--rule);
+    border-radius: 0 3px 3px 0;
+  }
+  .rail a:hover, .rail a:focus-visible {
+    color: var(--ink);
+    background: var(--sunk);
+    border-left-color: var(--accent);
+  }
+
+  main { display: grid; gap: 2.2rem; min-width: 0; }
+
+  section {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem 1.6rem 1.7rem;
+    min-width: 0;
+  }
+  section > :first-child { margin-top: 0; }
+  section > :last-child { margin-bottom: 0; }
+
+  h2.spec {
+    font-family: var(--display);
+    font-size: 1.12rem;
+    font-weight: 600;
+    margin: 0 0 .3rem;
+    letter-spacing: -.005em;
+    scroll-margin-top: 1rem;
+  }
+  h3 {
+    font-family: var(--display);
+    font-size: .8rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 600;
+    margin: 1.6rem 0 .7rem;
+  }
+  p { margin: 0 0 .9rem; max-width: 66ch; }
+  p:last-child { margin-bottom: 0; }
+
+  .subhead { color: var(--ink-soft); margin: 0 0 1rem; max-width: 66ch; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1rem; }
+  .chip {
+    font-family: var(--display);
+    font-size: .7rem;
+    letter-spacing: .04em;
+    padding: .16rem .5rem;
+    border-radius: 999px;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+    background: var(--sunk);
+    white-space: nowrap;
+  }
+  .chip.solve  { color: var(--guess);   border-color: color-mix(in srgb, var(--guess) 40%, var(--rule)); }
+  .chip.read   { color: var(--copy);    border-color: color-mix(in srgb, var(--copy) 40%, var(--rule)); }
+  .chip.refuse { color: var(--unknown); border-color: color-mix(in srgb, var(--unknown) 40%, var(--rule)); }
+
+  pre {
+    font-family: var(--display);
+    font-size: .8rem;
+    line-height: 1.55;
+    background: var(--sunk);
+    border: 1px solid var(--rule-soft);
+    border-left: 2px solid var(--rule);
+    border-radius: 3px;
+    padding: .7rem .85rem;
+    margin: 0 0 .9rem;
+    overflow-x: auto;
+  }
+  pre.cmd { border-left-color: var(--accent); }
+  pre.screen { border-left-color: var(--ink-dim); color: var(--ink-soft); }
+  pre b { color: var(--ink); font-weight: 600; }
+  pre .bad { color: var(--unknown); }
+  pre .good { color: var(--fact); }
+  code {
+    font-family: var(--display);
+    font-size: .86em;
+    background: var(--sunk);
+    border: 1px solid var(--rule-soft);
+    border-radius: 3px;
+    padding: .05em .3em;
+  }
+
+  kbd {
+    font-family: var(--display);
+    font-size: .74rem;
+    line-height: 1.5;
+    display: inline-block;
+    padding: .1rem .38rem;
+    border: 1px solid var(--rule);
+    border-bottom-width: 2px;
+    border-radius: 3px;
+    background: var(--card);
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  ol.steps { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
+  ol.steps > li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 1.6rem minmax(0, 1fr);
+    gap: .9rem;
+    align-items: start;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    font-family: var(--display);
+    font-size: .74rem;
+    color: var(--ink-dim);
+    background: var(--sunk);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    text-align: center;
+    line-height: 1.5rem;
+    height: 1.6rem;
+  }
+  .act { margin: 0 0 .4rem; display: flex; flex-wrap: wrap; gap: .35rem; align-items: baseline; }
+  .act .then { color: var(--ink-dim); font-size: .82rem; font-family: var(--display); }
+  .steps p { margin: 0 0 .5rem; }
+  .steps pre { margin: .5rem 0 .4rem; }
+
+  .note, .warn {
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    background: var(--sunk);
+    border-radius: 3px;
+    padding: .75rem .9rem;
+    margin: 1rem 0;
+  }
+  .warn { border-left-color: var(--unknown); }
+  .note p, .warn p { margin: 0; max-width: 64ch; }
+  .note p + p, .warn p + p { margin-top: .55rem; }
+  .note .tag, .warn .tag {
+    font-family: var(--display);
+    font-size: .68rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    display: block;
+    margin-bottom: .3rem;
+  }
+  .warn .tag { color: var(--unknown); }
+
+  .tablewrap { overflow-x: auto; margin: 0 0 1rem; }
+  table { border-collapse: collapse; width: 100%; font-size: .85rem; min-width: 34rem; }
+  th, td {
+    text-align: left;
+    padding: .45rem .7rem .45rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--display);
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 600;
+    border-bottom-color: var(--rule);
+  }
+  td.num { font-family: var(--display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.mono, th.mono { font-family: var(--display); }
+  tr:last-child td { border-bottom: none; }
+  .ok  { color: var(--fact); }
+  .no  { color: var(--unknown); }
+
+  .swatch { display: inline-block; width: .8em; height: .8em; border-radius: 2px; vertical-align: -.05em; margin-right: .35em; }
+  ul.legend { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: .35rem; font-size: .9rem; }
+
+  footer { max-width: 74rem; margin: 0 auto; padding: 0 1.5rem 3rem; color: var(--ink-dim); font-size: .85rem; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="eyebrow">samples/damaged</p>
+    <h1>Eleven damaged files, and which keys to press</h1>
+    <p class="lede">One walkthrough per sample: the command that opens it, then the
+      TUI keys in the order they are worth pressing, and what each one puts on
+      screen. Every count, message and timing here was measured against these
+      files by driving the interface, not read off the source.</p>
+    <p class="lede">Rebuild the samples with
+      <code>.venv/bin/python samples/build/makedamaged.py</code> and
+      <code>samples/build/makepcap.py</code>. Commands are written
+      as <code>toeknife</code>; use <code>.venv/bin/toeknife</code> if the venv is
+      not active.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="rail" aria-label="samples">
+    <h2>Walkthroughs</h2>
+    <ol>
+      <li><a href="#how">How the keys work</a></li>
+      <li><a href="#rotted">evidence.zip · rotted</a></li>
+      <li><a href="#shredded">evidence.zip · shredded</a></li>
+      <li><a href="#fronts">noeocd &amp; sfx</a></li>
+      <li><a href="#gz">capture.gz</a></li>
+      <li><a href="#dict">preset-dict.zlib</a></li>
+      <li><a href="#gap">head + tail</a></li>
+      <li><a href="#carved">carved-midblock.bin</a></li>
+      <li><a href="#png">plot-damaged.png</a></li>
+      <li><a href="#pdf">report-noxref.pdf</a></li>
+      <li><a href="#order">Suggested order</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+  <section id="how">
+    <h2 class="spec">How the keys work</h2>
+    <p class="subhead">Every printable character fills a hole, because typing the
+      byte you think belongs somewhere is the point of the tool. Commands
+      therefore live on ctrl and function keys, and nothing you type while
+      solving can trigger one.</p>
+
+    <h3>On the tape</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th class="mono">key</th><th>does</th></tr></thead>
+        <tbody>
+          <tr><td class="mono"><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td><td>move the byte cursor; <kbd>home</kbd>/<kbd>end</kbd> row ends, <kbd>pgup</kbd>/<kbd>pgdn</kbd> page</td></tr>
+          <tr><td class="mono"><kbd>tab</kbd> / <kbd>shift+tab</kbd></td><td>next / previous unknown class</td></tr>
+          <tr><td class="mono">any character</td><td>fill the hole under the cursor and every position equal to it</td></tr>
+          <tr><td class="mono"><kbd>ctrl+x</kbd></td><td>fill with a hex byte instead</td></tr>
+          <tr><td class="mono"><kbd>backspace</kbd></td><td>clear the guess under the cursor</td></tr>
+          <tr><td class="mono"><kbd>ctrl+z</kbd> / <kbd>ctrl+r</kbd></td><td>undo / redo; a whole model run undoes as one step</td></tr>
+          <tr><td class="mono"><kbd>ctrl+n</kbd> / <kbd>ctrl+p</kbd></td><td>next / previous back-reference</td></tr>
+          <tr><td class="mono"><kbd>enter</kbd></td><td>follow the selected match to the bytes it copies from</td></tr>
+          <tr><td class="mono"><kbd>ctrl+g</kbd></td><td>go to an output position (negative numbers allowed)</td></tr>
+          <tr><td class="mono"><kbd>ctrl+w</kbd> / <kbd>ctrl+s</kbd></td><td>write recovered bytes / save the session</td></tr>
+          <tr><td class="mono"><kbd>ctrl+k</kbd></td><td>the menu: every command, including the ones with no key</td></tr>
+          <tr><td class="mono"><kbd>ctrl+q</kbd></td><td>quit</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Screens</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th class="mono">key</th><th>opens</th><th>inside it</th></tr></thead>
+        <tbody>
+          <tr><td class="mono"><kbd>f2</kbd></td><td>alignment picker: ranked bit offsets with previews</td><td><kbd>↑</kbd><kbd>↓</kbd> then <kbd>enter</kbd>, <kbd>esc</kbd> cancels. Fragments only</td></tr>
+          <tr><td class="mono"><kbd>f3</kbd></td><td>resync: block boundaries found by scanning</td><td>same; each row is decode-validated</td></tr>
+          <tr><td class="mono"><kbd>f4</kbd></td><td>the model's proposals, ranked, with context</td><td><kbd>enter</kbd> takes the row, <kbd>ctrl+a</kbd> takes every ✓, <kbd>-</kbd>/<kbd>+</kbd> move the threshold, <kbd>ctrl+d</kbd> drops a row</td></tr>
+          <tr><td class="mono"><kbd>f5</kbd></td><td>model picker: this machine, a catalogue that can be fetched, models you built, byte models</td><td><kbd>↑</kbd><kbd>↓</kbd> then <kbd>enter</kbd> to look at a row, <kbd>enter</kbd> again to commit, <kbd>esc</kbd> to back out</td></tr>
+          <tr><td class="mono"><kbd>ctrl+f</kbd></td><td>fill everything above the floor, in rounds; stops and asks first when the fills would land in a preset dictionary or a long lost run</td><td><kbd>enter</kbd> fills anyway, <kbd>esc</kbd> stops; <kbd>ctrl+z</kbd> undoes the whole run</td></tr>
+          <tr><td class="mono"><kbd>f6</kbd> / <kbd>ctrl+b</kbd></td><td>hide the blocks pane / move into it</td><td><kbd>esc</kbd> returns to the tape</td></tr>
+          <tr><td class="mono"><kbd>f7</kbd></td><td>what next: the actions that apply to this capture, then every route to a lost table, what it costs, and why the ones that do not apply do not</td><td><kbd>↑</kbd><kbd>↓</kbd> then <kbd>enter</kbd> runs a row marked <code>▸</code>, <kbd>esc</kbd> closes</td></tr>
+          <tr><td class="mono"><kbd>f8</kbd></td><td>checksum: what the container recorded against what came out</td><td><kbd>enter</kbd> pins unknown bytes with it, <kbd>ctrl+l</kbd> alternates model and checksum, <kbd>esc</kbd> closes</td></tr>
+          <tr><td class="mono"><kbd>f1</kbd></td><td>help</td><td><kbd>esc</kbd> closes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Colour is provenance</h3>
+    <ul class="legend">
+      <li><span class="swatch" style="background:var(--fact)"></span><b>green</b> — literal, read straight from the bitstream</li>
+      <li><span class="swatch" style="background:var(--copy)"></span><b>cyan</b> — copied from a byte that is already known</li>
+      <li><span class="swatch" style="background:var(--guess)"></span><b>yellow</b> — your guess, or a byte one of your guesses implies</li>
+      <li><span class="swatch" style="background:var(--model)"></span><b>magenta</b> — a model fill, or a byte one of them implies</li>
+      <li><span class="swatch" style="background:var(--unknown)"></span><b>red ░</b> — unknown and fillable</li>
+      <li><span class="swatch" style="background:var(--void)"></span><b>grey ░</b> — window space no back-reference reaches</li>
+    </ul>
+    <p>Green and cyan are facts. Yellow is something you asserted. Magenta is
+      something a model suggested. Red is a question. Four kinds of claim, four
+      colours, and they never mix.</p>
+
+    <div class="warn">
+      <span class="tag">with no corpus, f4 and ctrl+f have little to go on</span>
+      <p>With no <code>--corpus</code> at launch and no <kbd>f5</kbd>, the model
+        is trained on the stream's own recovered bytes, and on a small stream
+        that is not enough to clear the default 99.5% floor. <kbd>ctrl+f</kbd>
+        then reports <code>model filled nothing: nothing above 99.5%
+        confidence</code>, which is the tool being honest. Every walkthrough
+        below runs this way: the payload is <code>payload.txt</code>, and a
+        corpus holding it would hold the answer. Measured numbers for exactly
+        this are in the <a href="#dict">preset-dict.zlib</a> walkthrough.</p>
+      <p>A freeform path in <kbd>f5</kbd> is resolved against the directory you
+        started <code>toeknife</code> in, and the picker shows what it found
+        before anything is committed, so a path that points nowhere says
+        <code>0 file(s)</code> instead of silently doing nothing.</p>
+    </div>
+
+    <div class="note">
+      <span class="tag">the checksum is on f8</span>
+      <p>The status bar carries the container's verdict as one word —
+        <code>crc ok</code>, <code>crc MISMATCH</code>, <code>adler ?</code> —
+        and <kbd>f8</kbd> opens the whole of it: what the wrapper recorded, what
+        this decode produced, and what the checksum can still pin. It is the only
+        thing on screen that separates a right recovery from a plausible one, and
+        half the samples below are interesting because the tape looks perfect and
+        that one word does not.</p>
+      <p><code>--verify</code> on the command line prints the same verdict, which
+        is still the right way to check an exported file.</p>
+    </div>
+
+    <h3>What each sample opens as</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>open with</th><th>mode</th><th class="num">output</th><th class="num">holes</th><th>first key worth pressing</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">evidence.zip --entry rotted</td><td>stream</td><td class="num">96,000 B</td><td class="num">0</td><td class="mono"><kbd>f8</kbd>, then <kbd>ctrl+g</kbd> 29390</td></tr>
+          <tr><td class="mono">evidence.zip --entry shredded</td><td>stream</td><td class="num">130,019 B</td><td class="num">0</td><td class="mono"><kbd>f8</kbd>, then <kbd>ctrl+g</kbd> 64637</td></tr>
+          <tr><td class="mono">capture.gz --entry 1</td><td>stream</td><td class="num">0 B</td><td class="num">0</td><td class="mono"><kbd>f7</kbd> then <kbd>f3</kbd></td></tr>
+          <tr><td class="mono">capture.gz --entry 2</td><td>stream</td><td class="num">60,000 B</td><td class="num">0</td><td class="mono"><kbd>ctrl+b</kbd></td></tr>
+          <tr><td class="mono">preset-dict.zlib</td><td>stream</td><td class="num">19,200 B</td><td class="num">28</td><td class="mono"><kbd>tab</kbd> then <kbd>f4</kbd></td></tr>
+          <tr><td class="mono">head + tail (--gap)</td><td>assembled</td><td class="num">60,000 B</td><td class="num">2,048</td><td class="mono"><kbd>ctrl+g</kbd> 8192</td></tr>
+          <tr><td class="mono">carved-midblock.bin</td><td>fragment</td><td class="num">1 B</td><td class="num">0</td><td class="mono"><kbd>f7</kbd>, then <kbd>f3</kbd></td></tr>
+          <tr><td class="mono">carved-midblock.bin --resync</td><td>stream</td><td class="num">80,813 B</td><td class="num">8,787</td><td class="mono"><kbd>f4</kbd></td></tr>
+          <tr><td class="mono">plot-damaged.png --entry 0</td><td>stream</td><td class="num">28,880 B</td><td class="num">0</td><td class="mono"><kbd>f8</kbd>, then <kbd>ctrl+n</kbd></td></tr>
+          <tr><td class="mono">report-noxref.pdf --entry 1</td><td>stream</td><td class="num">12,000 B</td><td class="num">0</td><td class="mono"><kbd>ctrl+b</kbd></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="rotted">
+    <h2 class="spec">evidence.zip · rotted.md</h2>
+    <p class="subhead">One flipped bit. The stream inflates to exactly the right
+      length and 64 bytes of it are wrong. This is the walkthrough for what
+      damage looks like when nothing on screen can tell you about it.</p>
+    <div class="chips">
+      <span class="chip read">inspection, nothing to fill</span>
+      <span class="chip">96,000 B out, 0 holes</span>
+      <span class="chip refuse">CRC says otherwise</span>
+    </div>
+
+    <h3>Before you open it</h3>
+    <pre class="cmd">toeknife samples/damaged/evidence.zip
+toeknife samples/damaged/evidence.zip --entry rotted --verify</pre>
+    <pre class="screen">rotted.md: size 96000/96000 ok  crc <span class="bad">6da73ded/8d7c5e32 MISMATCH</span>
+<span class="bad">FAILED: the decode does not match what the container recorded.</span></pre>
+
+    <h3>Then</h3>
+    <pre class="cmd">toeknife samples/damaged/evidence.zip --entry rotted</pre>
+    <ol class="steps">
+      <li>
+        <div>
+          <p class="act"><span class="then">read the status bar</span></p>
+          <pre class="screen">out 0  block #0 dynamic  96000 bytes  no holes  floor 99.5%  <span class="bad">crc MISMATCH</span>  end</pre>
+          <p>Everything else on that line says the recovery went perfectly:
+            96,000 bytes, no holes, a clean end-of-stream. Every byte on the tape
+            is green or cyan, which is to say a fact read off the bitstream or
+            copied from one. The container disagrees.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f8</kbd><span class="then">the whole verdict</span></p>
+          <pre class="screen">what the container recorded
+  zip: rotted.md
+  size   96,000 bytes
+  crc32  8d7c5e32
+
+what this decode produced
+  96,000 bytes, 96,000 known, 0 unknown class(es) over 0 position(s)
+
+verdict
+  size 96000/96000 ok  crc 6da73ded/8d7c5e32 MISMATCH
+  <span class="bad">FAILED: the decode does not match what the container recorded.</span>
+  Every byte decoded, so some bytes read from the bitstream are wrong.
+  ctrl+k "fill from a suspected copy" shows where they differ from a copy.</pre>
+          <p>The right number of bytes came out, so only the checksum noticed.
+            <kbd>esc</kbd> to go back.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f4</kbd><span class="then">the model has no job here</span></p>
+          <p>It refuses, and the refusal is the information:</p>
+          <pre class="screen">nothing unknown left to fill</pre>
+          <p>There is nothing unknown to fill. The damage is not a hole, it is a
+            wrong answer wearing a right answer's colours.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+g</kbd> <code>29390</code><span class="then">the first wrong byte</span></p>
+          <p>In a real case you would not know this number. It is here so you can
+            see what the damage looks like from inside.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><span class="then">read the bits pane</span></p>
+          <p>The cursor sits on a back-reference, and the pane on the right takes
+            it apart field by field:</p>
+          <pre class="screen">match 13,6292    bit 100345..100368   reads 23098..23110
+  litlen code    sym 266 length base 13   code 1110110
+  length extra   +0 → length 13
+  dist code      sym 25  dist base 6145   code 1010
+  dist extra     +147 → distance 6292</pre>
+          <p>The flipped bit is bit 100360 (byte 12545, bit 0 of the compressed
+            data), inside that eleven-bit distance extra. Undamaged, the same
+            symbol reads <code>match 13,6300</code>: the same codes, plus 155.
+            One bit moved the copy's source eight bytes.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>enter</kbd><span class="then">follow the copy to its source</span></p>
+          <p>The cursor jumps to output 23098, where the tape reads
+            <code>r sir,” cri</code>. Those thirteen bytes are real text from
+            earlier in the file, copied legally by a legal match into a position
+            where <code>, my dear sir</code> belonged. Eleven of them differ.
+            Later matches copy the wrong bytes onward, which is how one bit
+            becomes 64 wrong bytes spread from 29390 to 74991.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+b</kbd><span class="then">then <kbd>esc</kbd></span></p>
+          <p>The blocks pane confirms there are two dynamic blocks and both
+            headers parsed cleanly. Nothing structural is wrong with this
+            file.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="warn">
+      <span class="tag">the point</span>
+      <p>Nothing in the view marks position 29390. The copy is well-formed, its
+        source is real, and the colour scheme calls it cyan because it <em>is</em>
+        a copy of a known byte. The status bar knows the file is wrong, from 32
+        bits of arithmetic in the central directory; it cannot know <em>which</em>
+        of the 96,000 bytes is the lie. Bit rot inside a block header is the
+        other case, and <code>bitrot-header.gz</code> is that one.</p>
+    </div>
+  </section>
+
+  <section id="shredded">
+    <h2 class="spec">evidence.zip · shredded.md</h2>
+    <p class="subhead">200 bytes of the compressed data replaced with garbage. The
+      decode does not stop, it drifts: 64,637 correct bytes, then 61,426 wrong
+      ones, still 96.9% printable.</p>
+    <div class="chips">
+      <span class="chip read">inspection, nothing to fill</span>
+      <span class="chip">130,019 B out of a recorded 130,000</span>
+      <span class="chip refuse">size and CRC both wrong</span>
+    </div>
+
+    <pre class="cmd">toeknife samples/damaged/evidence.zip --entry shredded --verify
+toeknife samples/damaged/evidence.zip --entry shredded</pre>
+    <pre class="screen">shredded.md: size <span class="bad">130019/130000 MISMATCH</span>  crc <span class="bad">ae6697a7/2dc67a69 MISMATCH</span></pre>
+
+    <ol class="steps">
+      <li>
+        <div>
+          <p class="act"><span class="then">read the status bar first</span></p>
+          <pre class="screen">out 0  block #0 dynamic  130019 bytes  no holes  floor 99.5%  <span class="bad">size MISMATCH</span>  end</pre>
+          <p><code>end</code> means the decode reached a final block and stopped
+            cleanly. It is nineteen bytes longer than what the ZIP recorded, and the
+            status bar leads with the size rather than the checksum because the
+            length is already wrong — there is no need to compute a checksum to
+            know this one failed. <kbd>f8</kbd> spells it out.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+g</kbd> <code>64637</code><span class="then">the seam</span></p>
+          <p>Text before the cursor is <i>The Adventures of Sherlock Holmes</i>.
+            Text after it is what a Huffman decoder produces once it is a few
+            bits out of step:</p>
+          <pre class="screen">sticking up a station from time to time, or stopping the wagL anon byra one
+elsenly fastweenhave ave ave atake me oyour “Td the tl yournl-holda tall you my
+cortall ter whte</pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+n</kbd><span class="then">walk the back-references</span></p>
+          <p>The first match after the seam is at output 64638,
+            <code>match 3,9401</code>. It reaches over 9 KB back into text that
+            <em>is</em> correct, and copies it into a place it does not belong.
+            That is why damage spreads instead of staying local.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+w</kbd><span class="then">write it out anyway</span></p>
+          <p>Half of this entry is genuine. Export it, then compare against
+            whatever else you have; the tool will not pretend to know where the
+            good part ends.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="fronts">
+    <h2 class="spec">evidence-noeocd.zip and evidence-sfx.zip</h2>
+    <p class="subhead">The same five entries, arriving two ways that break an
+      ordinary reader. Both are command-line stories; once an entry opens, the
+      view is identical to the two walkthroughs above.</p>
+    <div class="chips"><span class="chip read">container layer only</span></div>
+
+    <pre class="cmd">toeknife samples/damaged/evidence-noeocd.zip</pre>
+    <pre class="screen">! no end-of-central-directory record: the archive is truncated, or this is
+  only a piece of one
+! recovered 5 entries by scanning for local headers; sizes may be missing for
+  streamed entries</pre>
+    <p>All five entries come back, and
+      <code>--entry rotted --verify</code> still reports the same CRC mismatch,
+      because the local header carries its own copy of the checksum.</p>
+
+    <pre class="cmd">toeknife samples/damaged/evidence-sfx.zip</pre>
+    <pre class="screen">EOCD at 105944: 5 entries, central directory 279 B at 101569
+offsets are shifted by +4096 bytes (prepended data, or a truncated front)</pre>
+    <p>4096 bytes glued to the front. The shift is measured rather than guessed:
+      the EOCD says how large the directory is and where the file ends, and the
+      difference is arithmetic. Entries verify afterwards.</p>
+  </section>
+
+  <section id="gz">
+    <h2 class="spec">capture.gz</h2>
+    <p class="subhead">Three members, the second damaged 40 bytes into its
+      deflate data: 60 bytes inverted inside the dynamic header, so the table
+      that defines every symbol in that member is gone. This walkthrough ends in
+      a refusal, and the refusal is the right answer.</p>
+    <div class="chips">
+      <span class="chip refuse">member 1 is unrecoverable</span>
+      <span class="chip read">members 0 and 2 verify</span>
+    </div>
+
+    <pre class="cmd">toeknife samples/damaged/capture.gz</pre>
+    <pre class="screen">member 0 at 0: OS Unix, mtime 0
+member 1 at 16672: OS Unix, mtime 0, <span class="bad">deflate data did not decode (bad-table)</span>
+member 2 at 36959: OS Unix, mtime 0
+! member 1 did not decode; the walk picked up again at member 2 (offset 36959),
+  the next gzip header found by scanning whose data decodes to its end</pre>
+    <p>gzip records no compressed length, so the end of a member is found by
+      decoding to it. One member that will not decode takes the position of
+      every member after it, and the fallback is to scan for the
+      <code>1f 8b</code> magic. A header found that way is taken only when its
+      data decodes to its own end, and member 1's CRC32 and length are read
+      from the 8 bytes in front of it.</p>
+
+    <pre class="cmd">toeknife samples/damaged/capture.gz --entry 1</pre>
+    <ol class="steps">
+      <li>
+        <div>
+          <p class="act"><span class="then">what opened</span></p>
+          <pre class="screen">out 0  0 bytes  stopped at 0  floor 99.5%  <span class="bad">size MISMATCH</span>  bad-table</pre>
+          <p>Nothing, from a 50,000-byte member. The header that builds the
+            table is the damaged part, so not one symbol after it can be
+            read.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f7</kbd><span class="then">what next, before trying anything</span></p>
+          <p>The top row is <code>repair the header: try every one-bit
+            flip</code>, because a header that fails with its bits present is
+            what bit rot looks like. Below it, each route to a lost table is
+            marked available or says why it is not. <kbd>enter</kbd> on the
+            top row:</p>
+          <pre class="screen">632 of 632 1-bit flips over 632 header bits: nothing parsed cleanly. Either
+the damage is not in this span or it is more than 1 bit(s).
+
+Two flipped bits are 199,396 pairs over these 632 bits: about 55 s at this
+search's rate. The recorded checksum still picks the one that is the original.</pre>
+          <p><kbd>enter</kbd> again tries the pairs. It took 25 seconds here:</p>
+          <pre class="screen">199,396 of 199,396 2-bit flips over 632 header bits: 10 parse, and none
+matches the recorded size and checksum. The damage is elsewhere or more than
+2 bit(s).</pre>
+          <p>Ten pairs make a header that parses, and the best of them decodes
+            268 bytes. The CRC32 read from the 8 bytes in front of member 2 rules
+            out all ten.
+            480 bits were inverted, so no small flip search was ever going to
+            find it. <kbd>esc</kbd> leaves the data alone.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f3</kbd><span class="then">scan for a boundary</span></p>
+          <p>Eleven candidates over the whole member. Read the last column, not
+            the counts:</p>
+          <pre class="screen">    bit     byte  kind     blocks  out  holes  recovered
+  86427   10,803  dynamic       1   21      0  lIl·␑UgImhoZleUol[ee␁
+   5755      719  dynamic       1   10      0  ··········
+ 115590   14,448  dynamic       1    8      0  ·!␚····␑
+ 107970   13,496  dynamic       1    6      0  ·␐␚␒·␔
+  84099   10,512  dynamic       1    3      0  ·,·</pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>esc</kbd><span class="then">reject all eleven</span></p>
+          <p>Each row is a dynamic header that parsed out of noise and built a
+            legal-looking table before its body fell over. The best is worth 21
+            bytes of junk. Stored-block headers fire on noise too, and a stored
+            block "decodes" whatever follows it, so the scan keeps a stored
+            candidate only when the stream carries on correctly after it. None
+            does here. The preview column is still the check worth reading.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+q</kbd><span class="then">and go where the data still is</span></p>
+          <pre class="cmd">toeknife samples/damaged/capture.gz --entry 0 --verify   # verified, byte for byte
+toeknife samples/damaged/capture.gz --entry 2 --verify   # 60,000 B, verified</pre>
+          <p>Member 1's table was in the damaged bytes, and this member had no
+            flush markers to carry another one. The damage cost exactly one
+            member, and the tool says so instead of dressing up a few bytes of
+            noise as a recovery.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="note">
+      <span class="tag">read this way</span>
+      <p>The resync list is sorted by how much each boundary recovers. That
+        ranking is advisory. The previews are the evidence, and here they
+        overrule the sort order completely.</p>
+    </div>
+  </section>
+
+  <section id="dict">
+    <h2 class="spec">preset-dict.zlib</h2>
+    <p class="subhead">A zlib stream compressed against a 40-byte dictionary the
+      file does not carry. Other tools refuse it. Here the missing dictionary
+      becomes 28 unknown bytes, and this is the sample to learn the solving keys
+      on.</p>
+    <div class="chips">
+      <span class="chip solve">28 classes over 1,608 positions</span>
+      <span class="chip">19,200 B out, 17,620 known</span>
+      <span class="chip read">Adler-32 available</span>
+    </div>
+
+    <pre class="cmd">toeknife samples/damaged/preset-dict.zlib</pre>
+    <pre class="screen">opening the only DEFLATE entry: zlib stream
+toeknife: zlib stream: compressed against preset dictionary 3fb40f8b, which is
+not in this file: references reaching into it become holes</pre>
+
+    <div class="warn">
+      <span class="tag">no corpus here, on purpose</span>
+      <p>The payload is <code>payload.txt</code>, so a corpus holding it would
+        hold the answer, and nothing else on the machine carries these 40
+        bytes. Opened with no <code>--corpus</code>, the predictor reads
+        <code>self-trainedx0.881 + table priorx0.25</code>, its best proposal is
+        <b>95.2%</b>, nothing is marked ✓ at the default floor, and
+        <kbd>ctrl+f</kbd> answers <code>model filled nothing: nothing above 99.5%
+        confidence</code>.</p>
+      <p>Dropping the floor does not rescue that. At 0.95 it fills one class
+        and <b>it is wrong</b>; at 0.60, three, all wrong; at 0.25, sixteen, ten
+        of them wrong. A preset dictionary is a word list, and the model trained on this stream's prose has no way to guess
+        one.</p>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <div>
+          <p class="act"><span class="then">where the cursor lands</span></p>
+          <pre class="screen">out -38  dictionary  19200 bytes  28 holes / 1608 slots  floor 99.5%  adler ?  end</pre>
+          <p>Output position −38. The dictionary occupies −40 to −1, and the tape
+            opens on the first hole in it. The 28 classes are not 28 bytes of
+            output: they cover 1,608 positions, because every reference into the
+            dictionary joins the class of the byte it reads.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>tab</kbd> <kbd>shift+tab</kbd><span class="then">walk the classes</span></p>
+          <p>28 stops, not 1,608. That ratio is the whole reason for the
+            representation.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+g</kbd> <code>-23</code> then type <kbd>f</kbd><span class="then">the biggest class</span></p>
+          <pre class="screen">set 'f' at -23, and 288 positions equal to it</pre>
+          <p>One keystroke, 289 cells. They turn yellow, and so does everything a
+            later copy derives from them.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>backspace</kbd><span class="then">or <kbd>ctrl+z</kbd></span></p>
+          <p><code>cleared guess at -23</code>, and the hole count goes back to
+            28. Use <kbd>ctrl+x</kbd> instead of a character when the byte is not
+            printable.</p>
+          <p>Clear it before moving on. A guess is context for everything the
+            model does next, so a wrong one left lying around costs fills: with
+            <code>f</code> still sitting at −23, <kbd>ctrl+f</kbd> at a 25% floor
+            fills twelve classes and gets one right, against sixteen and six
+            without it. The true byte there is a space.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f5</kbd><span class="then">look, then <kbd>esc</kbd></span></p>
+          <p>Four sections, everything in them discovered rather than typed:</p>
+          <pre class="screen">1 · ON THIS MACHINE
+  text-en   Text, English        ~/Documents, /usr/share/doc, /usr/share/common-licenses
+      ↳ sweep the whole filesystem for text-en (slow, and reads everywhere)
+  markup    Markup and source    ~/code, /usr/share
+  elf       ELF binaries         /usr/bin, /usr/lib, /bin
+  png       PNG pixel data       ~/Pictures, /usr/share/icons, /usr/share/pixmaps  ⚠ inflated first
+  ⌨  type a path instead…
+
+2 · FROM OUTSIDE: nothing is fetched until you confirm
+  text-en   Project Gutenberg: Pride and Prejudice       ~754 KB
+  text-de   Project Gutenberg: Die Verwandlung           ~143 KB
+  markup    Wikipedia: DEFLATE, as served                ~227 KB
+  ⌨  fetch a URL you name…
+
+3 · MODELS YOU BUILT EARLIER: ~/.toeknife/models
+
+4 · BYTE MODEL</pre>
+          <p>The title line says what the picker is for: <code>A corpus of the
+            wrong KIND is worse than none: -17.2 bits per byte against -8.0 for
+            knowing nothing.</code> Section 3 lists every model found in
+            <code>~/.toeknife/models</code>; section 2 fetches on a second
+            <kbd>enter</kbd> and caches under <code>~/.toeknife/corpora</code>.
+            The <code>⌨ type a path instead…</code> row takes anything, and
+            <b>a path there is resolved against the directory you launched
+            <code>toeknife</code> from</b>. The first <kbd>enter</kbd> only
+            looks, so a path that points nowhere says so before anything is
+            committed:</p>
+          <pre class="screen">train on what you named
+  no such file or directory: nowhere-at-all
+  0 file(s), 0 bytes
+  nothing readable there</pre>
+          <p>None of these holds the dictionary, and the one file here that
+            holds the stream's text is the answer itself. <kbd>esc</kbd> backs
+            out, and the rest of this walkthrough stays self-trained.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f4</kbd><span class="then">read before accepting</span></p>
+          <pre class="screen">28 open classes, 0 at or above the 99.5% floor (✓). Context is from each
+class's most readable occurrence.
+
+      -38   x6    ' '   95.2%   't' 0x0a '.' 'n'    to love for I[ ]░░e Adler. All
+      -11   x3    ' '   94.6%   ',' 'f' 'e' 'a'     The Red-Head[ ]░░League·   II
+      -5    x7    ' '   69.3%   't' 'e' 'n' 'a'   ediately outs░[ ]░ the door. Th</pre>
+          <p><code>x6</code> is how many positions that class covers. The context
+            column is the text around the class's most readable occurrence, so
+            the suggestion can be read in place. Read it here: the dictionary
+            at −38 is <code>r</code>, and the model's surest answer is a
+            space.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>-</kbd> <kbd>-</kbd> <kbd>-</kbd> <kbd>+</kbd><span class="then">move the threshold and watch the ✓ move</span></p>
+          <pre class="screen">99.5% →  0 at or above
+99%   →  0
+95%   →  1
+90%   →  2</pre>
+          <p>The rungs are 0.999, 0.995, 0.99, 0.95, 0.90, 0.80, 0.70, 0.60, 0.50,
+            0.25, 0. Whatever you leave the dial on is what <kbd>ctrl+f</kbd> uses
+            afterwards, and the status line shows it as <code>floor</code>.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+a</kbd><span class="then">take every ✓</span></p>
+          <pre class="screen">accepted all at or above 95%: 1 class(es) filled, ctrl+z undoes the lot</pre>
+          <p>Holes fall from 28 to 27. The filled bytes come back magenta, so a
+            model's suggestion never gets mistaken later for something you knew.
+            This one is wrong. <kbd>ctrl+z</kbd> puts it back.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+f</kbd><span class="then">the same job with propagation, and a stop</span></p>
+          <pre class="screen">Stopped before filling the dictionary
+
+1 class(es) clear the 95% floor, but each holds a byte of the preset
+dictionary. A dictionary is a list of common strings, and the floor was
+measured on running text: fills there measured 48% right at an 80% floor.
+
+The dictionary itself proves every byte at once. The program that wrote this
+stream usually holds it.
+
+Nothing has been filled.
+
+d find the dictionary in a file   enter fill anyway   esc stop here</pre>
+          <p>Every hole in this file is a dictionary byte, so <kbd>ctrl+f</kbd>
+            asks first. <kbd>d</kbd> looks for the dictionary in a file you
+            name, which is the route that proves every byte at once.
+            <kbd>enter</kbd> fills anyway:</p>
+          <pre class="screen">model filled 1 classes (6 positions), surest first, down to 95% in 1 rounds;
+ctrl+z undoes the lot</pre>
+          <p>At the default 99.5% it answers <code>model filled nothing: nothing
+            above 99.5% confidence</code> without stopping. The message names the
+            floor rather than claiming the model has nothing, and <kbd>f4</kbd>
+            shows what it does have.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f8</kbd><span class="then">let the checksum have an opinion</span></p>
+          <p>The status bar has read <code>adler ?</code> since the file opened:
+            a checksum over output that still has unknown bytes is not evidence,
+            and the tool will not pretend otherwise. The panel says what it can
+            still do:</p>
+          <pre class="screen">what the checksum can still do
+  Adler-32 only: two sums modulo 65521. It cannot be solved like CRC32, but it
+  still rules candidates out.
+  enter shortlists each unknown byte with the model and keeps only the
+  combinations that reproduce the checksum. Survivors are counted and shown:
+  five unknown bytes under Adler-32 alone once produced a wrong answer that
+  checksummed correctly.
+  There is no model loaded to shortlist with. f5 gives it a corpus.</pre>
+          <p>Press <kbd>enter</kbd> and it refuses, and says why:</p>
+          <pre class="screen">checksum: the checksum cannot finish this on its own (no CRC32 recorded for
+this stream), and there is no model to shortlist with. Press f5 for a corpus,
+then try again</pre>
+          <p>That refusal is the honest answer for this file. <kbd>ctrl+l</kbd>
+            alternates the model and the checksum until neither moves, and here
+            it moves nothing: <code>0 of 28 classes filled over 1 round(s), 28
+            left; not checked against a checksum</code>. The ledger
+            distinguishes <em>refused to rule</em> from <em>found nothing</em>,
+            which is the whole difference between a check that could not run
+            and a check that ran and cleared it.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+w</kbd><span class="then">then check it outside</span></p>
+          <pre class="cmd">toeknife samples/damaged/preset-dict.zlib --verify</pre>
+          <p>Same verdict, from the command line, for an exported file.</p>
+        </div>
+      </li>
+    </ol>
+
+    <h3>What the dial is actually worth here</h3>
+    <p>The dictionary is <code>forensic analysis of compressed evidence</code>, so
+      every fill can be scored. Measured with <kbd>ctrl+f</kbd>, then
+      <kbd>enter</kbd> to fill anyway, with no corpus:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th class="num">threshold</th><th class="num">classes filled</th><th class="num">positions</th><th class="num">correct</th><th class="num">wrong</th></tr></thead>
+        <tbody>
+          <tr><td class="num">0.995 (default)</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td class="num">0.99</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td class="num">0.95</td><td class="num">1</td><td class="num">6</td><td class="num">0</td><td class="num no">1</td></tr>
+          <tr><td class="num">0.90</td><td class="num">2</td><td class="num">9</td><td class="num">0</td><td class="num no">2</td></tr>
+          <tr><td class="num">0.80</td><td class="num">2</td><td class="num">9</td><td class="num">0</td><td class="num no">2</td></tr>
+          <tr><td class="num">0.70</td><td class="num">2</td><td class="num">9</td><td class="num">0</td><td class="num no">2</td></tr>
+          <tr><td class="num">0.60</td><td class="num">3</td><td class="num">16</td><td class="num">0</td><td class="num no">3</td></tr>
+          <tr><td class="num">0.50</td><td class="num">4</td><td class="num">56</td><td class="num ok">1</td><td class="num no">3</td></tr>
+          <tr><td class="num">0.25</td><td class="num">16</td><td class="num">1,018</td><td class="num ok">6</td><td class="num no">10</td></tr>
+          <tr><td class="num">0</td><td class="num">28</td><td class="num">1,608</td><td class="num ok">9</td><td class="num no">19</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The default fills nothing, and every rung below it is wrong more often
+      than right. Filling all 28 leaves no holes and the status bar turns to
+      <code>adler MISMATCH</code>. You would not know which ones were wrong,
+      which is what the next step is for.</p>
+
+    <h3>Then let the checksum have an opinion</h3>
+    <pre class="cmd">toeknife samples/damaged/preset-dict.zlib \
+         --solve --solve-confidence 0.70 --checksum-solve --verify</pre>
+    <pre class="screen">solver: filled 0 of 28 classes (0 output positions) in 0 rounds; stopped
+because the 2 classes left above 70% hold bytes of the preset dictionary, a
+word list rather than text, where fills measured 48% right. 28 classes still open.
+solver: --dict finds the real dictionary; --fill-dictionary fills them anyway
+checksum: no CRC32 recorded for this stream
+checksum: supply --corpus so the model can shortlist the candidates the
+checksum has to choose between</pre>
+    <p>The command line stops at the dictionary the same way. With
+      <code>--fill-dictionary</code> and a 0.25 floor it fills sixteen classes,
+      and the checksum still declines for want of a model to shortlist with.
+      Adler-32 cannot say which byte is wrong. It can refuse to bless an
+      answer it cannot check, which is more than the tape can do on its
+      own.</p>
+  </section>
+
+  <section id="gap">
+    <h2 class="spec">capture-head.bin + capture-tail.bin</h2>
+    <p class="subhead">Two pieces of one stream with 2,048 output bytes missing
+      between them: a capture that lost packets. The gap is set up on the command
+      line, then the view opens on the seam.</p>
+    <div class="chips">
+      <span class="chip solve">2,048 classes over 11,335 positions</span>
+      <span class="chip">60,000 B out, 48,665 known</span>
+    </div>
+
+    <pre class="cmd">toeknife samples/damaged/capture-head.bin \
+         --gap samples/damaged/capture-tail.bin --total-size 60000</pre>
+    <pre class="screen">gap: the tail after the loss starts with a block header of its own, which
+     decodes cleanly to the end; it is read from there
+gap: output gap of 2,048 bytes, from the recorded decompressed size</pre>
+    <p>The tail was cut at a flush, so it opens on a block header and carries
+      its own table, and it is read from that header. Without
+      <code>--total-size</code> it searches, and gets this one wrong: 709 bytes
+      against the true 2,048, with 6,097 bytes reading across the gap to judge
+      by. It says that much itself:</p>
+    <pre class="screen">gap: gap of 709 bytes, the best of 8,193 tried (6097 bytes read across it); a
+     search result, which nothing here proves
+gap: it scores 1.09, against a median of 1.07 over 200 gaps sampled; that
+     barely stands out, so the gap may be past the 8,192 searched (--gap-max)</pre>
+
+    <ol class="steps">
+      <li>
+        <div>
+          <p class="act"><span class="then">where the cursor lands</span></p>
+          <pre class="screen">out 8192  60000 bytes  2048 holes / 11335 slots  floor 99.5%  end</pre>
+          <p>Output 8192, the first byte of the hole, because the head decodes
+            exactly 8 KB. Mode reads <code>assembled</code>.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>↓</kbd> <kbd>↓</kbd> <kbd>pgdn</kbd><span class="then">look at the shape of it</span></p>
+          <p>2,048 missing bytes cover 11,335 unknown positions, so on average
+            each class turns up about five and a half times, the rest of them
+            copies further down the stream. Fill one and it lands in all of
+            them.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+f</kbd><span class="then">and read why it stops</span></p>
+          <pre class="screen">Stopped before filling inside long unknown runs
+
+1 more class(es) clear the 99.5% floor, but every occurrence of them sits in a
+run of 256 or more bytes that nothing was read from -- a lost packet, or a gap
+that size. Fills there measured 19% right whatever the floor, because each one
+becomes context for the next and the model ends up agreeing with itself.
+
+Nothing has been filled.
+
+enter continue anyway   esc stop here</pre>
+          <p>About seven seconds to get here. <kbd>enter</kbd> continues:</p>
+          <pre class="screen">model filled 1 classes (1 positions), surest first, down to 99.5% in 1 rounds;
+ctrl+z undoes the lot</pre>
+          <p>One byte out of two thousand, and it is wrong. A 2 KB hole in the
+            middle of prose is not something statistics reconstruct.
+            <kbd>ctrl+z</kbd> takes it back.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+w</kbd><span class="then">the part worth having</span></p>
+          <p>48,665 bytes on either side of the hole are exact. That is the point
+            of the gap machinery: get the offset right and everything else is
+            correct, get it wrong and the cross-gap copies silently read the
+            wrong text.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="carved">
+    <h2 class="spec">carved-midblock.bin</h2>
+    <p class="subhead">60 KB carved out of the middle of a stream written with no
+      flushing at all. The table is behind the damage and the next one is a long
+      way off. This is the sample that shows the tool's limits.</p>
+    <div class="chips">
+      <span class="chip refuse">1 byte as opened</span>
+      <span class="chip solve">80,813 B after f3, 8,787 classes</span>
+    </div>
+
+    <pre class="cmd">toeknife samples/damaged/carved-midblock.bin</pre>
+    <ol class="steps">
+      <li>
+        <div>
+          <p class="act"><span class="then">what opened</span></p>
+          <pre class="screen">out 0  block #0 fragment  1 bytes  stopped at 1  floor 99.5%  bad-dist</pre>
+          <p>One byte, read from bit 12. Nothing is wrong with the tool; the bits
+            at the front of this file are the middle of a symbol stream whose
+            table is gone.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f7</kbd><span class="then">what could be tried</span></p>
+          <p>The top row is <code>scan for the next block header (f3)</code>,
+            with the reason: <code>the decode stops after 1 bytes: a carve that
+            starts inside a block has no table, and the next header carries its
+            own</code>. Below it, two routes run (decode what is here, scan for a
+            boundary), two ask for something (a related capture, known
+            plaintext), two are marked as not in this release (the 1,828-table
+            and 89,247-table dictionary sweeps), and the rest do not
+            apply, each with its reason: no header here to repair, the block's
+            end is not known, no known plaintext, no dynamic block to gate.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>esc</kbd> then <kbd>f2</kbd><span class="then">the wrong question, on purpose</span></p>
+          <pre class="screen">select starting bit offset   (enter = use, esc = cancel)
+    bit  score  lit  mch  out  holes  status
+  ▶12   -3.10    1    0    1      0  bad-dist ⊂3    o
+   46   -3.35    9    2  213    189  bad-dist ⊂14   ░░░░░░░░░░░░░░░░░░░░░░░░</pre>
+          <p>48 offsets ranked, and none of them recovers anything but holes.
+            <kbd>f2</kbd> asks "where in the bitstream do I start reading,
+            assuming a table". Here there is no table to assume.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>esc</kbd> then <kbd>f3</kbd><span class="then">the right question</span></p>
+          <pre class="screen">block boundaries: 29 found in the first 100% of the data   (enter = resync
+here, esc = cancel)
+
+     bit     byte  kind     blocks     out  holes  recovered
+  234216   29,277  dynamic       2  80,813   8787  D░░░░░░░░░░░░░░░░░░░░e░░░░
+  477631   59,703  dynamic       1     553    480  ░░░░░░░░░░░░░░░░or░░░░░░░░
+  446007   55,750  dynamic       1      28      0  ···␍6·6␀9····␐·␋9P␇·6␘··(3·␎
+  347089   43,386  dynamic       1      12      0  ␁··␚␚···␚···</pre>
+          <p>29 candidates over the whole file, in about four seconds. The real
+            boundary sits at bit 234,216, 49% of the way in, and tops the list.
+            The rows below the first two are why the scan decode-validates: a
+            dynamic header parses out of noise roughly every 4,000 bits, and
+            each of those built a legal-looking table before its body fell
+            apart. The command line gives the same list with
+            <code>--scan</code>, and <code>--resync</code> opens straight on the
+            top row.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>enter</kbd><span class="then">what the resynced view opens as</span></p>
+          <pre class="screen">out -30435  pre-fragment  80813 bytes  8787 holes / 75690 slots  floor 99.5%  truncated</pre>
+          <p>80,813 bytes out, 13,910 known. 75,690 unknown positions collapse
+            to 8,787 classes, a reduction of almost 9:1. The largest class is
+            137 positions. The cursor starts at −30435, in window space the
+            carve never held.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f4</kbd><span class="then">expect to wait</span></p>
+          <pre class="screen">8787 open classes, 0 at or above the 99.5% floor (✓).</pre>
+          <p>About twelve seconds to rank 8,787 classes, and the best of them is
+            93.7%. The context column shows a letter or two between runs of
+            <code>░</code>: the surviving bytes are scattered, with holes on
+            both sides, so there is almost no context to work with.
+            <kbd>ctrl+f</kbd> takes about as long and fills nothing.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="note">
+      <span class="tag">the comparison worth making</span>
+      <p>Open <code>samples/streaming-fragment.bin --resync</code> next. A
+        similar carve, written with a sync flush every 8 KB: 42,861 bytes known
+        instead of 13,910. How the stream was written decides almost everything,
+        and this sample exists to make that difference visible.</p>
+    </div>
+  </section>
+
+  <section id="png">
+    <h2 class="spec">plot-damaged.png</h2>
+    <p class="subhead">A byte flipped inside the second IDAT chunk after its CRC
+      was computed. Two checksums disagree about two different things, and only
+      one of them can judge a recovery.</p>
+    <div class="chips">
+      <span class="chip read">28,880 B out, 0 holes</span>
+      <span class="chip refuse">Adler-32 mismatch</span>
+      <span class="chip">binary, not text</span>
+    </div>
+
+    <pre class="cmd">toeknife samples/damaged/plot-damaged.png</pre>
+    <pre class="screen">5 chunks: IHDR IDAT zTXt IEND
+IDAT: 2 chunk(s), 27243 bytes of zlib stream
+<span class="bad">! chunk CRC mismatch at 13666</span> (a chunk CRC covers the compressed bytes, so it
+  says which chunk holds the damage, and repairs one or two flipped bits)
+
+  #   offset   comp   uncomp   crc32  method  fl  name
+  0       41      ?        ?       -  deflate -D  IDAT pixel data
+       ! gathered from 2 IDAT chunk(s)
+       ! IDAT chunk 2 of 2 (file offset 13,666) fails its CRC: the damage is in
+         its 13,622 bytes, stream bytes 13,621-27,242
+  1    27319     58        ?       -  deflate -D  zTXt Comment</pre>
+
+    <ol class="steps">
+      <li>
+        <div>
+          <p class="act"><span class="then">open it and read the status bar</span></p>
+          <pre class="cmd">toeknife samples/damaged/plot-damaged.png --entry 0</pre>
+          <pre class="screen">out 0  block #0 dynamic  28880 bytes  no holes  floor 99.5%  <span class="bad">adler MISMATCH</span>  end</pre>
+          <p>The chunk CRC in the listing told you <em>where</em> the damage is.
+            The zlib Adler-32 sits at the end of the pixel stream and covers the
+            output, so it is the one that says whether a recovery is right, and
+            it is the one in the status bar. <kbd>f8</kbd> shows both numbers.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+n</kbd><span class="then">then <kbd>enter</kbd></span></p>
+          <pre class="cmd">toeknife samples/damaged/plot-damaged.png --entry 0</pre>
+          <p>The first back-reference is at output 2066; <kbd>enter</kbd> follows
+            it to 804. Binary data renders as Control Pictures
+            (<code>␀␁␂…␡</code>), one cell per byte, so matches and literals still
+            line up column for column even with nothing readable on the tape.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f6</kbd><span class="then">more room</span></p>
+          <p>Hides the blocks pane. On a narrow terminal that is the difference
+            between seeing a 200-byte match and seeing forty bytes of one.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f5</kbd> → the <code>png</code> row<span class="then">the corpus trap</span></p>
+          <p>These 28,880 bytes are <em>filtered scanlines</em>, not the PNG file's
+            bytes. Training on <code>.png</code> files as they sit on disk trains
+            on compressed noise, so that row carries <code>⚠ inflated first</code>
+            and the scan decompresses before it trains. The catalogue's Wikimedia
+            entry in section 2 is the same thing fetched rather than found.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f7</kbd> then <kbd>enter</kbd><span class="then">repair it with the chunk CRC</span></p>
+          <p>The top row is <code>repair flipped bits with the chunk CRC</code>.
+            A chunk CRC covers the compressed bytes, so one or two flipped bits
+            can be solved for:</p>
+          <pre class="screen">ONE REPAIR, PROVEN TWICE.
+chunk 2 of 2: byte 200 bit 6.
+
+Flipping it back restores the chunk's CRC32 over the compressed bytes and the
+stream's Adler-32 over the decoded ones.
+
+3 flip(s) restore a chunk CRC; 1 also match the Adler-32.</pre>
+          <p>Three flips satisfy the chunk CRC on its own, and the Adler-32
+            picks one of them. <kbd>enter</kbd> applies it and the status bar
+            reads <code>adler ok</code>.</p>
+        </div>
+      </li>
+    </ol>
+
+    <p><code>plot-splitrun.png</code> is the structural sibling: undamaged, but
+      with a <code>tEXt</code> chunk between the two IDATs, which the spec forbids.
+      The listing warns that the run is not consecutive; the pixels still verify,
+      because this file interleaves rather than losing anything. The warning
+      matters for the file where it <em>has</em> lost something, which decodes to
+      nonsense somewhere without ever failing.</p>
+  </section>
+
+  <section id="pdf">
+    <h2 class="spec">report-noxref.pdf</h2>
+    <p class="subhead">Two FlateDecode objects and no cross-reference table. The
+      streams are found by scanning, and both are healthy, which makes this the
+      sample to learn the block browser on.</p>
+    <div class="chips">
+      <span class="chip read">12,000 B out, 0 holes</span>
+      <span class="chip">Adler-32 verifies</span>
+    </div>
+
+    <pre class="cmd">toeknife samples/damaged/report-noxref.pdf
+toeknife samples/damaged/report-noxref.pdf --entry 1 --verify</pre>
+    <pre class="screen">PDF 1.5
+2 /FlateDecode stream(s) found by scanning
+  0       66   3839   ?   -   deflate -D  obj 1
+  1     3984   5422   ?   -   deflate -D  obj 2
+
+obj 2: adler 7a166702/7a166702 ok
+<span class="good">verified: the recovered bytes are the original bytes.</span></pre>
+    <p>Uncompressed sizes are <code>?</code> because a PDF does not record them.
+      The xref is at the end of the file and the end is what damage takes, so the
+      scanner earns its place; a <code>stream</code> keyword only counts when it
+      directly follows the dictionary that describes it.</p>
+
+    <pre class="cmd">toeknife samples/damaged/report-noxref.pdf --entry 1</pre>
+    <ol class="steps">
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+b</kbd><span class="then">into the blocks pane</span></p>
+          <p>Arrow through the dynamic header: BFINAL, BTYPE, HLIT, HDIST, HCLEN,
+            the code-length code, then the literal/length and distance tables in
+            full. Every field still points at the bits it came from.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>enter</kbd> on a block<span class="then">then <kbd>esc</kbd></span></p>
+          <p>Selecting a block sends the cursor to the first byte that block
+            emitted. The two panes track each other in both directions: move the
+            cursor and the pane opens whichever block produced the byte under it.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>ctrl+n</kbd> <kbd>enter</kbd> <kbd>ctrl+p</kbd><span class="then">read the compressor's decisions</span></p>
+          <p>On a clean stream this is a bitstream inspector rather than a
+            recovery tool. <kbd>enter</kbd> on a match highlights the bytes it
+            copies from, which is the terminal version of hovering over it.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <p class="act"><kbd>f2</kbd><span class="then">refused, correctly</span></p>
+          <pre class="screen">alignment picker applies to fragments only</pre>
+          <p>This stream starts at a block header, so there is no alignment to
+            choose. The refusal is worth seeing once so the distinction between
+            <kbd>f2</kbd> and <kbd>f3</kbd> sticks.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="order">
+    <h2 class="spec">Suggested order</h2>
+    <p>If you are showing this to someone, or reminding yourself what the tool
+      does, four samples cover the range:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th class="num">#</th><th>sample</th><th>what it teaches</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="mono">evidence.zip · rotted</td><td>a decode that succeeds and lies, and the checksum that notices</td></tr>
+          <tr><td class="num">2</td><td class="mono">preset-dict.zlib</td><td>holes as equality classes, the corpus, the confidence dial, undo</td></tr>
+          <tr><td class="num">3</td><td class="mono">capture.gz --entry 1</td><td>reading previews instead of scores, and a refusal that is the right answer</td></tr>
+          <tr><td class="num">4</td><td class="mono">carved-midblock.bin</td><td>how the stream was written decides everything, and which question each scan answers</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Two things worth carrying out of all of them. The status bar's one word
+      is the only thing on screen that separates a right recovery from a
+      plausible one, and it can say a file is wrong without being able to say
+      which byte. And every screen that ranks something is sorting a list, not
+      making a decision: the previews, the context columns and the plan panes are
+      where the evidence is.</p>
+  </section>
+
+  </main>
+</div>
+
+<footer>
+  Measured against the files produced by <code>samples/build/makedamaged.py</code> on
+  2026-11-08, by driving the interface headlessly, with no corpus loaded. Regenerate the samples and the
+  numbers hold: the generator is deterministic.
+</footer>
+
+</body>
+</html>
